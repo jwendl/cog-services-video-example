@@ -41,7 +41,7 @@ namespace CognitiveServicesVideoExample
                 return new VisionServiceClient(visionApiKey, visionApiHost);
             });
 
-            await ProcessVideoFile(new FileInfo(@"C:\Users\jwendl\Downloads\Videos\iot-msft.mp4"));
+            await ProcessVideoFile(new FileInfo(@"C:\Users\juswen\Downloads\Videos\german-video.mp4"));
 
             Console.WriteLine("Done processing video file...");
             Console.ReadKey();
@@ -74,8 +74,9 @@ namespace CognitiveServicesVideoExample
                         if (frameCount % 100 == 0)
                         {
                             await AnalyzeVisionAsync(memoryStream);
-                            //await AnalyzeFaceAsync(memoryStream);
-                            //await AnalyzeEmotionAsync(memoryStream);
+                            await AnalyzeFaceAsync(memoryStream);
+                            await AnalyzeEmotionAsync(memoryStream);
+                            Console.WriteLine("-------------------");
                         }
                     }
                     catch (Exception exception)
@@ -111,7 +112,7 @@ namespace CognitiveServicesVideoExample
             }
             catch (FaceAPIException faceApiException)
             {
-                Console.WriteLine($"Error: {faceApiException.Message}");
+                Console.WriteLine($"Error: {faceApiException.ErrorMessage}");
             }
         }
 
@@ -120,7 +121,12 @@ namespace CognitiveServicesVideoExample
             var visualServiceClient = ServiceLocator.GetRequiredService<IVisionServiceClient>();
             var visualFeatures = new List<VisualFeature>()
             {
+                VisualFeature.Adult,
                 VisualFeature.Categories,
+                VisualFeature.Color,
+                VisualFeature.Description,
+                VisualFeature.ImageType,
+                VisualFeature.Tags,
             };
 
             try

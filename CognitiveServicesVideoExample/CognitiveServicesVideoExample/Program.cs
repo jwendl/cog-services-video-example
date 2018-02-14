@@ -41,7 +41,7 @@ namespace CognitiveServicesVideoExample
                 return new VisionServiceClient(visionApiKey, visionApiHost);
             });
 
-            await ProcessVideoFile(new FileInfo(@"C:\Users\juswen\Downloads\Videos\german-video.mp4"));
+            await ProcessVideoFile(new FileInfo(@"C:\Users\juswen\Downloads\Videos\room-movie.mov"));
 
             Console.WriteLine("Done processing video file...");
             Console.ReadKey();
@@ -66,16 +66,18 @@ namespace CognitiveServicesVideoExample
                     break;
                 }
 
-                var memoryStream = matImage.ToMemoryStream(".jpg", new ImageEncodingParam(ImwriteFlags.JpegQuality, 90));
-                if (memoryStream.Length > 20000)
+                var analysisMemoryStream = matImage.ToMemoryStream(".jpg", new ImageEncodingParam(ImwriteFlags.JpegQuality, 90));
+                var faceMemoryStream = matImage.ToMemoryStream(".png", new ImageEncodingParam(ImwriteFlags.PngCompression, 3));
+                var emotionStream = matImage.ToMemoryStream(".jpg", new ImageEncodingParam(ImwriteFlags.JpegQuality, 100));
+                if (analysisMemoryStream.Length > 20000)
                 {
                     try
                     {
                         if (frameCount % 100 == 0)
                         {
-                            await AnalyzeVisionAsync(memoryStream);
-                            await AnalyzeFaceAsync(memoryStream);
-                            await AnalyzeEmotionAsync(memoryStream);
+                            await AnalyzeVisionAsync(analysisMemoryStream);
+                            await AnalyzeFaceAsync(faceMemoryStream);
+                            await AnalyzeEmotionAsync(emotionStream);
                             Console.WriteLine("-------------------");
                         }
                     }
